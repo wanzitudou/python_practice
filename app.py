@@ -3,7 +3,7 @@ import requests
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=r"D:\python训练\github_test1.env")
+load_dotenv(dotenv_path=r"D:\python训练\python_practice\GitHub_practice1.env")
 
 
 API_KEY=os.getenv("DEEPSEEK_API_KEY")# 本地运行时用默认值，云端配置环境变量
