@@ -4,72 +4,84 @@ import glob
 import numpy as np
 import requests
 import json
+import re
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
-# 1. 加载环境变量（API Key）
+# ---------- 1. 环境配置 ----------
 load_dotenv()
 api_key = os.getenv("DEEPSEEK_API_KEY")
 if not api_key:
     st.error("❌ 未找到 DEEPSEEK_API_KEY，请在 .env 文件中配置")
 
-# 2. 加载向量化模型（首次运行会下载）
+# ---------- 2. 加载模型（缓存） ----------
 @st.cache_resource
 def load_model():
     return SentenceTransformer('all-MiniLM-L6-v2')
 
 model = load_model()
 
-# 3. 读取知识库文件夹（自动扫描 knowledge_base 下的所有 txt）
+# ---------- 3. 读取知识库（绝对路径） ----------
 @st.cache_data
-def load_knowledge_base(folder="knowledge_base"):
+def load_knowledge_base():
+    # 获取当前脚本所在目录，并拼接 knowledge_base 文件夹
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    folder = os.path.join(base_dir, "knowledge_base")
+    
     all_chunks = []
     file_paths = glob.glob(os.path.join(folder, "*.txt"))
+    
+    # 调试信息（会在终端输出）
+    print("📁 知识库路径:", folder)
+    print("📄 找到的 .txt 文件:", file_paths)
+    
     if not file_paths:
+        st.warning(f"⚠️ 在 {folder} 下未找到任何 .txt 文件，请检查文件夹是否存在。")
         return []
+    
     for file_path in file_paths:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            # 按中文标点切分（与你的 V2 保持一致）
-            import re
+            # 按中文标点切分
             sentences = re.split(r'[。！？；\n]+', content)
             for s in sentences:
                 s = s.strip()
-                if len(s) > 20:
+                if len(s) > 20:   # 过滤太短的片段
                     all_chunks.append(s)
+    
+    print("📚 总共切分出", len(all_chunks), "个文本块")
     return all_chunks
 
 chunks = load_knowledge_base()
 
-if not chunks:
-    st.warning("⚠️ 未在 knowledge_base 文件夹中找到 .txt 文件")
-
-# 4. 向量化所有文本块（只在加载时计算一次）
-@st.cache_data
-def embed_chunks(chunks):
-    return model.encode(chunks, show_progress_bar=False)
-
 if chunks:
+    # ---------- 4. 向量化所有文本块（缓存） ----------
+    @st.cache_data
+    def embed_chunks(chunks):
+        return model.encode(chunks, show_progress_bar=False)
+    
     chunk_embeddings = embed_chunks(chunks)
+else:
+    chunk_embeddings = None
 
-# 5. 核心检索 + 问答函数（完全照搬 V2 的逻辑）
+# ---------- 5. 核心检索 + 问答函数 ----------
 def ask_question(question):
-    if not chunks:
-        return "知识库为空，请检查 knowledge_base 文件夹。"
+    if not chunks or chunk_embeddings is None:
+        return "知识库为空，请检查 knowledge_base 文件夹是否包含 .txt 文件。"
     
     # 向量化问题
     q_emb = model.encode([question])[0]
     
-    # 余弦相似度计算
+    # 余弦相似度
     similarities = np.dot(chunk_embeddings, q_emb) / (
         np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(q_emb)
     )
     
-    # 取前 3 个最相关的段落
+    # 取前 3 个最相关段落
     top_indices = np.argsort(similarities)[-3:][::-1]
     context = "\n\n".join([chunks[i] for i in top_indices])
     
-    # 构造 Prompt（强硬约束版）
+    # 构造 Prompt（强约束版）
     prompt = f"""
 请根据以下【参考资料】回答用户的问题。如果参考资料中有相关信息，请直接引用或概括回答。如果完全没有，请只回答“资料中未找到”。
 
@@ -102,7 +114,7 @@ def ask_question(question):
     except Exception as e:
         return f"请求异常: {str(e)}"
 
-# 6. Streamlit 网页界面
+# ---------- 6. Streamlit 界面 ----------
 st.set_page_config(page_title="多文档智能问答", page_icon="📚")
 st.title("📚 多文档智能问答助手")
 st.write("基于 `knowledge_base` 文件夹中的文档回答问题（支持多文件）")
