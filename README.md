@@ -57,5 +57,5 @@ python rag_folder.py
 - 个人文档助手
 
 ## 📝 作者
-wanzitudou
+Meatball Potatoes
 
