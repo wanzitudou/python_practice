@@ -24,14 +24,12 @@ model = load_model()
 # ---------- 3. 读取知识库（绝对路径） ----------
 @st.cache_data
 def load_knowledge_base():
-    # 获取当前脚本所在目录，并拼接 knowledge_base 文件夹
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "knowledge_base")
     
     all_chunks = []
     file_paths = glob.glob(os.path.join(folder, "*.txt"))
     
-    # 调试信息（会在终端输出）
     print("📁 知识库路径:", folder)
     print("📄 找到的 .txt 文件:", file_paths)
     
@@ -42,13 +40,24 @@ def load_knowledge_base():
     for file_path in file_paths:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            # 按中文标点切分
-            sentences = re.split(r'[。！？；\n]+', content)
-            for s in sentences:
-                s = s.strip()
-                if len(s) > 20:   # 过滤太短的片段
-                    all_chunks.append(s)
+            # ---- 新的切分逻辑 ----
+            lines = content.split('\n')
+            current_chunk = []
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                # 如果遇到数字序号（如 "1."、"2."）或表格行（包含 "|"），并且当前块已有内容，则保存当前块并开始新块
+                if re.match(r'^(\d+\.|\•|\-|\|)', line) and current_chunk:
+                    all_chunks.append('\n'.join(current_chunk))
+                    current_chunk = []
+                current_chunk.append(line)
+            # 保存最后一个块
+            if current_chunk:
+                all_chunks.append('\n'.join(current_chunk))
     
+    # 过滤掉过短的块（少于10个字符）
+    all_chunks = [chunk for chunk in all_chunks if len(chunk) > 10]
     print("📚 总共切分出", len(all_chunks), "个文本块")
     return all_chunks
 
@@ -78,7 +87,7 @@ def ask_question(question):
     )
     
     # 取前 3 个最相关段落
-    top_indices = np.argsort(similarities)[-3:][::-1]
+    top_indices = np.argsort(similarities)[-5:][::-1]
     context = "\n\n".join([chunks[i] for i in top_indices])
     
     # 构造 Prompt（强约束版）
