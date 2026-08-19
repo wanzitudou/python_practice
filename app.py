@@ -1,62 +1,119 @@
 import streamlit as st
+import os
+import glob
+import numpy as np
 import requests
 import json
-import os
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=r"D:\python训练\python_practice\GitHub_practice1.env")
 
+# 1. 加载环境变量（API Key）
+load_dotenv()
+api_key = os.getenv("DEEPSEEK_API_KEY")
+if not api_key:
+    st.error("❌ 未找到 DEEPSEEK_API_KEY，请在 .env 文件中配置")
 
-API_KEY=os.getenv("DEEPSEEK_API_KEY")# 本地运行时用默认值，云端配置环境变量
+# 2. 加载向量化模型（首次运行会下载）
+@st.cache_resource
+def load_model():
+    return SentenceTransformer('all-MiniLM-L6-v2')
 
-# 读取手册内容（固定知识库）
-with open("product_manual.txt", "r", encoding="utf-8") as f:
-    knowledge_base = f.read()
+model = load_model()
 
-# 页面标题
-st.title("📖 产品知识库问答助手")
-st.write("请提问关于 '智净X3' 电动牙刷的问题")
+# 3. 读取知识库文件夹（自动扫描 knowledge_base 下的所有 txt）
+@st.cache_data
+def load_knowledge_base(folder="knowledge_base"):
+    all_chunks = []
+    file_paths = glob.glob(os.path.join(folder, "*.txt"))
+    if not file_paths:
+        return []
+    for file_path in file_paths:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            # 按中文标点切分（与你的 V2 保持一致）
+            import re
+            sentences = re.split(r'[。！？；\n]+', content)
+            for s in sentences:
+                s = s.strip()
+                if len(s) > 20:
+                    all_chunks.append(s)
+    return all_chunks
 
-# 用户输入框
-user_question = st.text_input("输入你的问题：")
+chunks = load_knowledge_base()
 
-# 提交按钮
-if st.button("提交问题"):
-    if user_question:
-        # 构造提示词（和rag_qa.py一样）
-        prompt = f"""
-请根据下面提供的【产品手册】内容，回答用户的问题。
-要求：
-- 只能基于手册内容回答，严禁添加手册中没有的信息。
-- 如果手册里没有提到，请直接回答“手册中未提及”。
+if not chunks:
+    st.warning("⚠️ 未在 knowledge_base 文件夹中找到 .txt 文件")
 
-【产品手册】
-{knowledge_base}
+# 4. 向量化所有文本块（只在加载时计算一次）
+@st.cache_data
+def embed_chunks(chunks):
+    return model.encode(chunks, show_progress_bar=False)
+
+if chunks:
+    chunk_embeddings = embed_chunks(chunks)
+
+# 5. 核心检索 + 问答函数（完全照搬 V2 的逻辑）
+def ask_question(question):
+    if not chunks:
+        return "知识库为空，请检查 knowledge_base 文件夹。"
+    
+    # 向量化问题
+    q_emb = model.encode([question])[0]
+    
+    # 余弦相似度计算
+    similarities = np.dot(chunk_embeddings, q_emb) / (
+        np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(q_emb)
+    )
+    
+    # 取前 3 个最相关的段落
+    top_indices = np.argsort(similarities)[-3:][::-1]
+    context = "\n\n".join([chunks[i] for i in top_indices])
+    
+    # 构造 Prompt（强硬约束版）
+    prompt = f"""
+请根据以下【参考资料】回答用户的问题。如果参考资料中有相关信息，请直接引用或概括回答。如果完全没有，请只回答“资料中未找到”。
+
+【参考资料】
+{context}
 
 【用户问题】
-{user_question}
+{question}
+
+请回答：
 """
-
-        # 调用API
-        url = "https://api.deepseek.com/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": "deepseek-v4-flash",
-            "messages": [{"role": "user", "content": prompt}]
-        }
-
-        response = requests.post(url, headers=headers, json=data)
-
+    # 调用 API
+    url = "https://api.deepseek.com/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "deepseek-v4-flash",
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=data, timeout=30)
         if response.status_code == 200:
             result = response.json()
-            answer = result["choices"][0]["message"]["content"]
-            st.success("回答：")
-            st.write(answer)
+            return result["choices"][0]["message"]["content"]
         else:
-            st.error(f"API调用失败，错误码：{response.status_code}")
-            st.text(response.text)
+            return f"API 请求失败: {response.status_code} - {response.text}"
+    except Exception as e:
+        return f"请求异常: {str(e)}"
+
+# 6. Streamlit 网页界面
+st.set_page_config(page_title="多文档智能问答", page_icon="📚")
+st.title("📚 多文档智能问答助手")
+st.write("基于 `knowledge_base` 文件夹中的文档回答问题（支持多文件）")
+
+user_question = st.text_input("请输入你的问题：")
+
+if st.button("提交问题"):
+    if user_question:
+        with st.spinner("🔍 正在检索并生成回答..."):
+            answer = ask_question(user_question)
+        st.success("回答：")
+        st.write(answer)
     else:
         st.warning("请先输入一个问题！")
-
