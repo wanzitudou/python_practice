@@ -57,5 +57,5 @@ python rag_folder.py
 - 个人文档助手
 
 ## 📝 作者
-[你的名字]
-GitHub: [你的GitHub链接]
+wanzitudou
+
