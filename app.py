@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 import glob
 import numpy as np
 import requests
@@ -18,7 +19,7 @@ if not api_key:
 @st.cache_resource
 def load_model():
     return SentenceTransformer('all-MiniLM-L6-v2')
-
+# 从网上下载一个能把中文变成数字指纹的 AI 小模型
 model = load_model()
 
 # ---------- 3. 读取知识库（绝对路径） ----------
@@ -86,12 +87,13 @@ def ask_question(question):
         np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(q_emb)
     )
     
-    # 取前 3 个最相关段落
-    top_indices = np.argsort(similarities)[-5:][::-1]
+    # 取前 5 个最相关段落
+    top_indices = np.argsort(similarities)[-10:][::-1]
     context = "\n\n".join([chunks[i] for i in top_indices])
     
     # 构造 Prompt（强约束版）
     prompt = f"""
+现在你是一个幽默风趣的产品推荐官，要用轻松活泼的口吻回答。
 请根据以下【参考资料】回答用户的问题。如果参考资料中有相关信息，请直接引用或概括回答。如果完全没有，请只回答“资料中未找到”。
 
 【参考资料】
