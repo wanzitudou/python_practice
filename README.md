@@ -114,8 +114,8 @@
 
 ## 🧪 运行效果
 
-<img width="780" height="535" alt="命令行版问答效果" src="https://github.com/user-attachments/assets/5581d958-77a5-4509-a3fc-cd558c58910c" />
-<img width="756" height="253" alt="网页版问答效果" src="https://github.com/user-attachments/assets/78bae44f-98a8-41d4-90c1-964ca38ef685" />
+<img width="939" height="1116" alt="image" src="https://github.com/user-attachments/assets/e77174cc-d14c-4904-a1cd-836146a268ab" />
+
 
 **示例一：能答的问题（真实运行输出，top_k=5）**
 
