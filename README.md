@@ -54,6 +54,8 @@ streamlit run app.py
 
 <img width="780" height="535" alt="image" src="https://github.com/user-attachments/assets/5581d958-77a5-4509-a3fc-cd558c58910c" />
 .
+<img width="756" height="253" alt="image" src="https://github.com/user-attachments/assets/78bae44f-98a8-41d4-90c1-964ca38ef685" />
+
 
 ## 📝 版本说明
 
