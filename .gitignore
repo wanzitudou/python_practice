@@ -3,6 +3,7 @@
 .env.*
 *.env
 !.env.example
+.streamlit/secrets.toml
 
 # ---- Python ----
 __pycache__/
