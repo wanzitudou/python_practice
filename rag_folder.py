@@ -1,131 +1,113 @@
 import os
-import re
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"   # 强制走国内镜像
+
 import glob
+import re
 import numpy as np
 import requests
-import json
 from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
+# ... 其余代码不变
 
-# 强制从当前脚本所在目录加载 .env 文件
-script_dir = os.path.dirname(os.path.abspath(__file__))
-env_path = os.path.join(script_dir, ".env")   # 或者 "knowledge_base.env"
-load_dotenv(dotenv_path=env_path)
+# ---------- 0. 全局配置 ----------
+load_dotenv()
+API_KEY = os.getenv("DEEPSEEK_API_KEY")
+MODEL = SentenceTransformer('all-MiniLM-L6-v2')
 
-# ---------- 1. 加载向量化模型（将文字转为数字指纹） ----------
-print("⏳ 正在加载 AI 语义模型（首次运行会下载约 90MB）...")
-model = SentenceTransformer('all-MiniLM-L6-v2')  # 轻量级且高效
-print("✅ 模型加载完成！")
-
-# ---------- 2. 读取并切分文件夹里的所有文本 ----------
-def load_documents(folder_path):
-    import re
+# ---------- 1. 仓库管理员：读取并切分文档 ----------
+def load_docs(folder="knowledge_base"):
+    """从文件夹读取所有 txt，按段落/标点切分成短句列表"""
     all_chunks = []
-    file_paths = glob.glob(os.path.join(folder_path, "*.txt"))
-    
-    if not file_paths:
-        print(f"❌ 在 {folder_path} 下没有找到 .txt 文件")
-        return []
-    
-    for file_path in file_paths:
+    for file_path in glob.glob(os.path.join(folder, "*.txt")):
         with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()   # 必须在此定义
-            # 按中文标点切分
-            sentences = re.split(r'[。！？；\n]+', content)
-            for s in sentences:
-                s = s.strip()
-                if len(s) > 20:
-                    all_chunks.append(s)
-    
-    print(f"📚 共读取 {len(file_paths)} 个文件，切分为 {len(all_chunks)} 个文本块")
+            content = f.read()
+           # 先按序号（1. / 2. / 等）分割，再按句号分割
+            import re
+            items = re.split(r'\n(?=\d+\.)', content)  # 按“换行+数字序号”分割
+            for item in items:
+                item = item.strip()
+                if len(item) > 20:
+                    all_chunks.append(item)
+    print(f"📚 共切分出 {len(all_chunks)} 个文本块")
     return all_chunks
 
-# 指定你的知识库文件夹（因为 rag_folder.py 在根目录，所以指向子文件夹）
-folder = "knowledge_base"
-chunks = load_documents(folder)
+# ---------- 2. 指纹录入员：把文本块全变成向量 ----------
+def build_index(chunks):
+    """把所有文本块转成向量（指纹），并和原文一一对应"""
+    embeddings = MODEL.encode(chunks, show_progress_bar=True)
+    print(f"✅ 向量化完成，共 {len(embeddings)} 个向量")
+    return embeddings  # 返回一个二维数组
 
-if not chunks:
-    exit()
-
-# ---------- 3. 把所有文本块转换成向量（存在内存中） ----------
-print("⏳ 正在将文本块转换为向量...")
-chunk_embeddings = model.encode(chunks, show_progress_bar=True)
-print(f"✅ 向量化完成，共 {len(chunk_embeddings)} 个向量，每个维度 384")
-
-# ---------- 4. 核心检索函数 ----------
-def ask_question(question):
-    # 4.1 将问题转为向量
-    q_emb = model.encode([question])[0]
-    
-    # 4.2 计算问题向量与所有文本块向量的余弦相似度
-    similarities = np.dot(chunk_embeddings, q_emb) / (
-        np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(q_emb)
+# ---------- 3. 接待员：根据问题找出最相似的原文 ----------
+def retrieve(question, chunks, embeddings, top_k=10):
+    """接收问题，返回最相似的 top_k 个原文片段"""
+    q_emb = MODEL.encode([question])[0]
+    # 计算相似度
+    similarities = np.dot(embeddings, q_emb) / (
+        np.linalg.norm(embeddings, axis=1) * np.linalg.norm(q_emb)
     )
-    
-    # 4.3 取出相似度最高的前 5个文本块
-    top_indices = np.argsort(similarities)[-5:][::-1]
+    top_indices = np.argsort(similarities)[-top_k:][::-1]
     context = "\n\n".join([chunks[i] for i in top_indices])
-    
-    # ----- 调试输出（查看检索结果）-----
-    print("\n" + "="*40)
-    print("检索到的前 3 个文本块：")
-    for idx, i in enumerate(top_indices):
-        print(f"\n--- 第 {idx+1} 块 (相似度: {similarities[i]:.4f}) ---")
-        print(chunks[i][:200] + "..." if len(chunks[i]) > 200 else chunks[i])
-    print("="*40 + "\n")
-    # ----- 调试结束 -----
+    return context
 
-    # 4.4 构造提示词（注意缩进）
+# ---------- 4. 秘书：把原文和问题发给大模型 ----------
+def generate(question, context):
+    """基于检索到的原文，调用 DeepSeek 生成最终回答"""
+    if not API_KEY:
+        return "❌ 未配置 API Key"
+
     prompt = f"""
-请根据【参考资料】回答用户问题。
-
-【要求】
-- 如果问题问的是“产品名称”、“品牌”、“功能”、“优点”，请优先从参考资料中提取明确的词汇或短语回答。
-- 如果参考资料中没有直接提及，请回答“资料中未找到”。
-
+现在你是一个幽默风趣的产品推荐官，要用轻松活泼的口吻回答。
+请根据以下【参考资料】回答用户问题。如果资料中没有相关信息，请用轻松的口吻说：“哎呀，我翻遍了手册也没找到这个问题的答案，要不您换个问法试试？”
 【参考资料】
 {context}
 
 【用户问题】
 {question}
 
-请回答：
+回答：
 """
-
-    # 4.5 获取 API Key（已在顶部加载环境变量，可直接读取）
-    api_key = os.getenv("DEEPSEEK_API_KEY")
-    if not api_key:
-        return "❌ 错误：未找到 DEEPSEEK_API_KEY，请检查 .env 文件配置。"
-
     url = "https://api.deepseek.com/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     data = {
-        "model": "deepseek-v4-flash",   # 或者 deepseek-chat
+        "model": "deepseek-v4-flash",
         "messages": [{"role": "user", "content": prompt}]
     }
-    
     try:
-        response = requests.post(url, headers=headers, json=data)
-        if response.status_code == 200:
-            result = response.json()
-            return result["choices"][0]["message"]["content"]
-        else:
-            return f"API 请求失败: {response.status_code} - {response.text}"
+        resp = requests.post(url, headers=headers, json=data, timeout=30)
+        if resp.status_code == 200:
+            return resp.json()["choices"][0]["message"]["content"]
+        return f"API 错误: {resp.status_code}"
     except Exception as e:
         return f"请求异常: {str(e)}"
 
-# ---------- 5. 交互式命令行测试 ----------
+# ---------- 5. 主程序入口（把流水线串起来） ----------
 if __name__ == "__main__":
-    print("\n🔍 知识库问答已启动！输入 'exit' 退出。")
+    print("🔍 正在启动多文档问答系统...")
+    
+    # 1. 准备原材料
+    text_chunks = load_docs("knowledge_base")
+    if not text_chunks:
+        print("❌ 知识库为空，请检查 knowledge_base 文件夹")
+        exit()
+
+    # 2. 建立指纹库
+    index = build_index(text_chunks)
+
+    # 3. 进入问答循环
     while True:
-        q = input("\n请输入你的问题: ")
-        if q.lower() == 'exit':
+        q = input("\n请输入你的问题（输入 exit 退出）: ")
+        if q.lower() == "exit":
             break
         if not q.strip():
             continue
+
         print("🤔 思考中...")
-        answer = ask_question(q)
-        print(f"\n🤖 回答: {answer}")
+        
+        # 4. 根据问题找原文（接待员）
+        found_context = retrieve(q, text_chunks, index, top_k=10)
+        
+        # 5. 把原文和问题交给大模型（秘书）
+        answer = generate(q, found_context)
+        
+        print(f"\n🤖 {answer}")

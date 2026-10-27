@@ -87,7 +87,7 @@ def ask_question(question):
         np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(q_emb)
     )
     
-    # 取前 5 个最相关段落
+    # 取前 10 个最相关段落（块本身较短，靠多召回补上下文完整性）
     top_indices = np.argsort(similarities)[-10:][::-1]
     context = "\n\n".join([chunks[i] for i in top_indices])
     
