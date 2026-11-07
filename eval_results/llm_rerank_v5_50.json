@@ -1,0 +1,532 @@
+{
+  "retriever": "vector+llm_rerank",
+  "params": {
+    "top_k": 5,
+    "candidates": 8,
+    "min_score_fallback": 0.4,
+    "model": "deepseek-chat"
+  },
+  "overall": {
+    "n_positive": 40,
+    "n_negative": 10,
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "mrr@5": 1.0
+  },
+  "refusal": {
+    "neg_refused": 10,
+    "neg_total": 10,
+    "pos_refused": 0,
+    "pos_total": 40,
+    "precision": 1.0,
+    "recall": 1.0
+  },
+  "cost": {
+    "total_tokens": 47460,
+    "cache_hits": 3,
+    "api_fallbacks": 0
+  },
+  "details": [
+    {
+      "question": "电池能用多久",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料5、6、8均直接给出标称续航45天及不同模式下的续航范围，能直接回答电池能用多久。",
+      "cached": true,
+      "top1_source": "产品手册.txt",
+      "top1_text": "标称续航：45天（每天使用2次，每次2分钟，标准日常清洁模式）。  实际浮动范围"
+    },
+    {
+      "question": "充满电要充多久",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3以问答形式直接给出完全充电约4.5小时，资料1和2也明确标注完全充电时间约4.5小时，均能直接回答问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "3：机身底部LED灯红色闪烁时，剩余电量＜15%，还能用约5~6次，请及时充电。"
+    },
+    {
+      "question": "电量低了会有什么提示",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接说明电量低时LED红灯闪烁提示剩余电量＜15%，资料2和3提到电量过低保护导致震动微弱，均与电量低提示相关。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "天；用敏感呵护可延长至50天左右。低温（＜0℃）会缩短约10%，恢复室温后回升。"
+    },
+    {
+      "question": "IPX7 防水能泡水吗",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2直接回答了IPX7能否泡水（可承受1米水深静置30分钟，但禁止长时间浸泡在浴缸/热水/肥皂水中），资料1和5提供了相同的具体限制条件。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "A4：完全充电约4.5小时。支持过充保护，整夜插电无风险。  Q5：IPX7防水"
+    },
+    {
+      "question": "刷头多久需要更换",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、6、4均直接说明刷头约3个月（540次）需更换，其中资料1最完整，包含更换周期及原因。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "540次（约3个月）后，机身背面指示灯黄色常亮（关机后闪烁3次），提示更换刷头。"
+    },
+    {
+      "question": "换完刷头怎么重置提醒",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3、5、2均直接说明更换刷头后长按模式键5秒重置提醒，其中资料3还补充了听到滴声后黄灯熄灭的细节。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "效率下降约40%；菌落总数可达新刷头的15~20倍。为了口腔健康，建议按时更换。"
+    },
+    {
+      "question": "四种清洁模式有什么区别",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接以问答形式完整说明四种模式的频率、适用场景和使用建议，资料2以表格列出各模式参数与场景，资料7用通俗语言区分四种模式用途，三者均能直接回答问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "（依据产品手册整理，共20条高频疑问）  Q1：四种清洁模式有什么区别？日常应该"
+    },
+    {
+      "question": "深层抛光模式多久用一次",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料4明确说明深层抛光模式建议每周1~2次深度清洁，直接回答了使用频率问题。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "深层抛光\t38,000次/分钟 + 振幅加大\t  茶渍、烟渍、咖啡渍沉积；  每"
+    },
+    {
+      "question": "敏感呵护模式适合什么人",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接说明敏感呵护模式专为牙龈敏感、洗牙后、正畸期设计，资料4和8也分别提到该模式适用于牙龈红肿或正畸后及初次使用适应，均直接回答适用人群。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "A19：可以，但建议使用5V/1A输出，避免电压过高导致红灯闪烁保护。  Q20"
+    },
+    {
+      "question": "牙龈按摩模式有什么作用",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2、7、3均直接说明牙龈按摩模式可促进牙龈血液循环、缓解晨起牙龈浮肿，其中资料2最完整。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "深层抛光\t38,000次/分钟 + 振幅加大\t  茶渍、烟渍、咖啡渍沉积；  每"
+    },
+    {
+      "question": "温度低于零度续航会变短吗",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2、1、6均明确说明环境温度低于0℃时锂电池活性下降、续航缩短约10%，恢复室温后回升，可直接回答问题。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "- 使用敏感呵护模式 → 续航可延长至 50天左右。  - 环境温度低于 0℃ "
+    },
+    {
+      "question": "三年大概要充多少次电",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和4直接给出三年总充电次数约80~90次，资料7给出一年充8次电可推算三年约24次，但资料1最直接回答。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "完全充电时间：约 4.5小时（支持过充保护，整夜插电无风险）。  💡 给顾客的换"
+    },
+    {
+      "question": "淋浴水温建议控制在多少度",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接给出淋浴水温建议＜45℃，资料3和2也提到热水蒸汽＞50℃可能损伤密封圈，与淋浴水温控制相关。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "❌ 禁止浸泡在浴缸/热水/肥皂水中超过30分钟  注意\t热水蒸汽（＞50℃）可能"
+    },
+    {
+      "question": "刷牙时刷头应该呈多少度",
+      "doc": "产品手册",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1明确说明刷头与牙面呈45°角，直接回答问题；资料5和6涉及刷牙流程和产品说明，相关性较低。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "2. 将刷头放入口中再开机（避免牙膏飞溅）。  3. 刷头与牙面呈 45°角，轻"
+    },
+    {
+      "question": "刷头为什么三个月要换",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接以问答形式说明三个月换刷头的原因及不换的后果，资料7和3分别详细列出刷毛磨圆率、清洁效率和细菌滋生等具体原因，均能直接回答问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "540次（约3个月）后，机身背面指示灯黄色常亮（关机后闪烁3次），提示更换刷头。"
+    },
+    {
+      "question": "刷头用久了清洁效率下降多少",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和2直接说明磨损后清洁效率下降约40%，资料5也明确提到效率下降约40%。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "率：使用3个月后，刷毛尖端磨圆率从出厂≥95%下降至约70%，损伤牙龈风险增加。"
+    },
+    {
+      "question": "刷头用三个月细菌会多多少",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、3、2均直接说明3个月后菌落总数可达新刷头的15~20倍，其中资料1表述最直接完整。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "- 细菌滋生：刷毛根部潮湿环境，3个月后菌落总数可达新刷头的15~20倍。  重"
+    },
+    {
+      "question": "机身脏了能用酒精擦吗",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、2、4均明确说明机身清洁用中性肥皂水、禁用酒精，可直接回答该问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "3：表示输入电压过高（＞5.5V），请换用标准5V充电头（普通手机充电头均可）。"
+    },
+    {
+      "question": "充电的时候进水了怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、2、6均明确指出充电口进水后需完全干燥24小时再充电，否则可能触发短路保护，直接回答了问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "禁止浸泡在浴缸/热水/肥皂水中超过30分钟，热水蒸汽（＞50℃）可能损伤密封圈。"
+    },
+    {
+      "question": "指示灯完全不亮怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3和资料1都直接说明指示灯不亮可能是电池深度亏电，需连续充电6小时激活，其中资料3以故障排查表形式最直接对应问题，资料2仅描述正常充电指示灯状态，相关性较低。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "常见“假性故障”快速排查  顾客反馈\t        可能原因\t        "
+    },
+    {
+      "question": "模式键无法切换是什么原因",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3和1直接指出模式无法切换的原因是刷头未安装到位触发安全锁，并给出重新插拔刷头的解决方法；资料2仅说明模式切换的正常操作，相关性较低。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "常见“假性故障”快速排查  顾客反馈\t        可能原因\t        "
+    },
+    {
+      "question": "充电时红灯闪烁是什么原因",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和4直接说明充电时红灯闪烁表示输入电压过高（＞5.5V），需换用标准5V充电头；资料5虽提到红灯闪烁但指电量低，相关性较低。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "A12：可能是刷头未安装到位触发了安全锁，请重新插拔刷头，听到“咔嗒”声即可。 "
+    },
+    {
+      "question": "开机震动很微弱怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2和资料1都直接指出开机震动微弱可能是电量过低保护，建议充电30分钟后再试，资料7重复了同一答案，三者均能直接回答问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "效率下降约40%；菌落总数可达新刷头的15~20倍。为了口腔健康，建议按时更换。"
+    },
+    {
+      "question": "怎么报修",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、3、4均明确说明报修方式为扫描包装内二维码一键报修、顺丰上门取件往返包邮，其中资料1直接以问答形式回答报修流程，最相关。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "。摔裂外壳、充电口针脚折断、使用非原装刷头、浸泡热水超过60℃等不属于保修范围。"
+    },
+    {
+      "question": "保修期是多长",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和3直接给出机身2年、刷头15天质保，资料2补充非保修情形，均与保修期问题直接相关。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "：用中性肥皂水擦拭机身，每月一次。禁用酒精、稀释剂等有机溶剂，以免损坏表面涂层。"
+    },
+    {
+      "question": "刷头到期指示灯是什么颜色",
+      "doc": "常见问题",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3、4、6均明确说明刷头到期指示灯为黄色常亮（关机后闪烁3次），其中资料3最直接完整地回答了该问题。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "全干燥24小时后再充电，否则可能触发短路保护（这属于使用不当，非产品质量问题）。"
+    },
+    {
+      "question": "你们公司叫什么名字",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和7明确写出公司全称“智净口腔科技（广州）有限公司”，资料3也以“智净口腔科技”指代公司，均可直接回答公司名称。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智净口腔科技（广州）有限公司 简介  品牌名称：智净（ZHIJING） 成立时间"
+    },
+    {
+      "question": "公司是哪一年成立的",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2明确写出成立时间为2018年，资料1和资料5的发展历程也均记载2018年公司成立。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智净口腔科技（广州）有限公司 简介  品牌名称：智净（ZHIJING） 成立时间"
+    },
+    {
+      "question": "公司总部在哪里",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2明确写出总部地址为中国·广州，资料4说明公司背景，资料1为联系方式，均与公司信息相关。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智净口腔科技（广州）有限公司 简介  品牌名称：智净（ZHIJING） 成立时间"
+    },
+    {
+      "question": "公司的电机驱动算法叫什么",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2和资料1都明确提到公司自主研发的“SmartPulse”电机驱动算法，资料2表述最完整直接，资料6仅提及相关关键技术但未给出算法名称。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "- 智能刷头（含计时芯片，支持更换提醒）  - 口腔护理周边（便携漱口水、牙线棒"
+    },
+    {
+      "question": "智净有哪些产品系列",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接列出智净X系列和智能刷头产品线，资料2介绍品牌背景，资料4提及X1和X3型号，均与产品系列相关。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智能电池管理、精密防水结构设计等关键技术，并拥有多项实用新型专利及外观设计专利。"
+    },
+    {
+      "question": "售后服务热线是多少",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和2直接给出服务热线400-888-6688，资料3虽提及售后但未给热线号码，相关性较低。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "厂前都经过严格的震动、防水、老化测试，确保到你手中的，不只是电器，更是一份安心。"
+    },
+    {
+      "question": "品牌使命是什么",
+      "doc": "公司介绍",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1直接给出品牌使命原文，资料3和5延续同一段落，进一步阐释使命理念。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智净口腔科技（广州）有限公司 简介  品牌名称：智净（ZHIJING） 成立时间"
+    },
+    {
+      "question": "这款牙刷卖多少钱",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2和4明确给出智净X3电动牙刷售价299元，资料1也提及价格相关话术，可直接回答价格问题。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "99！再送两支原装刷头（价值99元），顺丰包邮到家，2年质保，坏了直接上门换新。"
+    },
+    {
+      "question": "直播间下单送什么",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1、2、5均明确提到直播间下单赠送两支原装刷头（价值99元），其中资料1最直接完整地说明了下单赠品内容。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。"
+    },
+    {
+      "question": "支持几天无理由退换",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1明确提到7天无理由退换，资料3和5涉及售后承诺与保修范围，与退换政策相关。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "慢适应，之后您就不想再用手动牙刷了。我们还有7天无理由退换，您完全可以试试看。”"
+    },
+    {
+      "question": "顾客嫌贵怎么回应",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料2和4直接提供价格异议应对话术（日均成本、赠品、价值对比），资料3提供价值导向的回应思路。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。"
+    },
+    {
+      "question": "顾客说普通牙刷够用怎么回应",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料3直接针对“普通牙刷够用”的异议给出应对话术，资料2提供痛点引导式话术可辅助回应，资料1虽为其他异议但同属话术集可参考。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "智净X3，颜值能打，实力更能打。 已自留3支送爸妈送对象，趁活动赶紧冲！”  【"
+    },
+    {
+      "question": "线下导购怎么开场",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1是线下门店导购话术的开场白，直接相关；资料2和7同属推销话术合集，包含面向顾客的开场与促单表达，相关性次之。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "智净X3 智能声波电动牙刷 —— 推销话术合集 （适用场景：线下导购 / 直播带"
+    },
+    {
+      "question": "能边洗澡边刷牙吗",
+      "doc": "推销话术",
+      "rank": 1,
+      "answerable": true,
+      "reason": "资料1和4明确提到IPX7防水、可在淋浴时刷牙，直接回应能否边洗澡边刷牙；资料2提供刷牙操作流程，相关性次之。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "您花的每一分钱，买的是：  - 45天不用记挂充电——专注刷牙，而非伺候电器； "
+    },
+    {
+      "question": "今天天气怎么样",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均为产品手册、公司介绍和推销话术，没有任何关于天气的信息。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "天；用敏感呵护可延长至50天左右。低温（＜0℃）会缩短约10%，恢复室温后回升。"
+    },
+    {
+      "question": "帮我写一首关于春天的诗",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均关于电动牙刷产品，没有任何与春天或诗歌创作相关的内容。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "天；用敏感呵护可延长至50天左右。低温（＜0℃）会缩短约10%，恢复室温后回升。"
+    },
+    {
+      "question": "红烧肉怎么做",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均为电动牙刷产品手册、公司介绍和推销话术，没有任何关于红烧肉做法的信息。",
+      "cached": false,
+      "top1_source": "产品手册.txt",
+      "top1_text": "第三章 使用操作指南（图文要点） 开机与模式切换  - 短按1次电源键 → 开机"
+    },
+    {
+      "question": "比特币现在什么价格",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均为智净X3电动牙刷的产品推销、公司介绍或产品手册内容，没有任何关于比特币价格的信息。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。"
+    },
+    {
+      "question": "智净X3的CEO叫什么名字",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均未提及智净X3的CEO或任何公司高管姓名，无法回答问题。",
+      "cached": true,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "- 2022年 扩建研发中心，启动X3项目，针对四大使用场景深度定制  - 20"
+    },
+    {
+      "question": "这款牙刷有几种颜色",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均未提及牙刷的颜色种类，无法回答问题。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "你是不是一支刷头用了大半年，看着岔毛了还在硬撑？  如果你中了任何一条，今天这款"
+    },
+    {
+      "question": "电池用的是哪个品牌",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料仅提及锂电池、电池管理或续航，未给出电池品牌信息。",
+      "cached": true,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智能电池管理、精密防水结构设计等关键技术，并拥有多项实用新型专利及外观设计专利。"
+    },
+    {
+      "question": "能连接手机 App 吗",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均未提及能否连接手机App或蓝牙功能。",
+      "cached": false,
+      "top1_source": "常见问题.txt",
+      "top1_text": "A18：扫描包装内二维码一键报修，顺丰上门取件，往返包邮，非常便捷。  Q19："
+    },
+    {
+      "question": "双十一有什么优惠",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均为智净X3电动牙刷的产品推销话术和产品手册，仅提及直播间专属福利价、赠送刷头等常规促销，未涉及任何双十一活动或优惠信息。",
+      "cached": false,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。"
+    },
+    {
+      "question": "公司股票代码是多少",
+      "doc": "负样本",
+      "rank": null,
+      "answerable": false,
+      "reason": "所有资料均未提及公司股票代码或上市信息。",
+      "cached": false,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "厂前都经过严格的震动、防水、老化测试，确保到你手中的，不只是电器，更是一份安心。"
+    }
+  ]
+}

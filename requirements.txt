@@ -3,3 +3,5 @@ requests
 python-dotenv
 sentence-transformers
 numpy
+jieba
+rank-bm25

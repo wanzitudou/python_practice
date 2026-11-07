@@ -1,0 +1,420 @@
+{
+  "params": {
+    "retriever": "vector",
+    "top_k": 5,
+    "min_score": 0.4,
+    "chunk_size": 200,
+    "chunk_overlap": 40,
+    "pack_until": 90,
+    "embed_model": "BAAI/bge-small-zh-v1.5"
+  },
+  "overall": {
+    "n_positive": 40,
+    "n_negative": 10,
+    "hit@1": 0.825,
+    "hit@3": 0.95,
+    "hit@5": 1.0,
+    "mrr@5": 0.8904166666666666
+  },
+  "refusal": {
+    "neg_refused": 3,
+    "neg_total": 10,
+    "pos_refused": 0,
+    "pos_total": 40,
+    "precision": 1.0,
+    "recall": 0.3,
+    "false_negative": 7
+  },
+  "scores": {
+    "pos_min": 0.43767866492271423,
+    "pos_mean": 0.6499237574636936,
+    "neg_max": 0.6466771364212036,
+    "neg_mean": 0.47968230247497556
+  },
+  "per_doc": {
+    "产品手册": {
+      "n": 14,
+      "hit@1": 0.8571428571428571,
+      "hit@3": 0.8571428571428571,
+      "hit@5": 1.0,
+      "rr": 0.8892857142857142
+    },
+    "常见问题": {
+      "n": 12,
+      "hit@1": 0.9166666666666666,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "rr": 0.9444444444444445
+    },
+    "公司介绍": {
+      "n": 7,
+      "hit@1": 0.8571428571428571,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "rr": 0.9285714285714286
+    },
+    "推销话术": {
+      "n": 7,
+      "hit@1": 0.5714285714285714,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "rr": 0.761904761904762
+    }
+  },
+  "misses": [],
+  "positive_refused": [],
+  "positive_details": [
+    {
+      "question": "电池能用多久",
+      "doc": "产品手册",
+      "rank": 5,
+      "top1_score": 0.7272,
+      "refused": false
+    },
+    {
+      "question": "充满电要充多久",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7431,
+      "refused": false
+    },
+    {
+      "question": "电量低了会有什么提示",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.6762,
+      "refused": false
+    },
+    {
+      "question": "IPX7 防水能泡水吗",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.769,
+      "refused": false
+    },
+    {
+      "question": "刷头多久需要更换",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7564,
+      "refused": false
+    },
+    {
+      "question": "换完刷头怎么重置提醒",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7148,
+      "refused": false
+    },
+    {
+      "question": "四种清洁模式有什么区别",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7614,
+      "refused": false
+    },
+    {
+      "question": "深层抛光模式多久用一次",
+      "doc": "产品手册",
+      "rank": 4,
+      "top1_score": 0.6632,
+      "refused": false
+    },
+    {
+      "question": "敏感呵护模式适合什么人",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.5099,
+      "refused": false
+    },
+    {
+      "question": "牙龈按摩模式有什么作用",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.6483,
+      "refused": false
+    },
+    {
+      "question": "温度低于零度续航会变短吗",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.6524,
+      "refused": false
+    },
+    {
+      "question": "三年大概要充多少次电",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7385,
+      "refused": false
+    },
+    {
+      "question": "淋浴水温建议控制在多少度",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.6843,
+      "refused": false
+    },
+    {
+      "question": "刷牙时刷头应该呈多少度",
+      "doc": "产品手册",
+      "rank": 1,
+      "top1_score": 0.7446,
+      "refused": false
+    },
+    {
+      "question": "刷头为什么三个月要换",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.7577,
+      "refused": false
+    },
+    {
+      "question": "刷头用久了清洁效率下降多少",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.7559,
+      "refused": false
+    },
+    {
+      "question": "刷头用三个月细菌会多多少",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.7607,
+      "refused": false
+    },
+    {
+      "question": "机身脏了能用酒精擦吗",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6481,
+      "refused": false
+    },
+    {
+      "question": "充电的时候进水了怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.75,
+      "refused": false
+    },
+    {
+      "question": "指示灯完全不亮怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6668,
+      "refused": false
+    },
+    {
+      "question": "模式键无法切换是什么原因",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6406,
+      "refused": false
+    },
+    {
+      "question": "充电时红灯闪烁是什么原因",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.7238,
+      "refused": false
+    },
+    {
+      "question": "开机震动很微弱怎么办",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6092,
+      "refused": false
+    },
+    {
+      "question": "怎么报修",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6323,
+      "refused": false
+    },
+    {
+      "question": "保修期是多长",
+      "doc": "常见问题",
+      "rank": 1,
+      "top1_score": 0.6757,
+      "refused": false
+    },
+    {
+      "question": "刷头到期指示灯是什么颜色",
+      "doc": "常见问题",
+      "rank": 3,
+      "top1_score": 0.6601,
+      "refused": false
+    },
+    {
+      "question": "你们公司叫什么名字",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.4377,
+      "refused": false
+    },
+    {
+      "question": "公司是哪一年成立的",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.5085,
+      "refused": false
+    },
+    {
+      "question": "公司总部在哪里",
+      "doc": "公司介绍",
+      "rank": 2,
+      "top1_score": 0.4686,
+      "refused": false
+    },
+    {
+      "question": "公司的电机驱动算法叫什么",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.6406,
+      "refused": false
+    },
+    {
+      "question": "智净有哪些产品系列",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.6747,
+      "refused": false
+    },
+    {
+      "question": "售后服务热线是多少",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.6829,
+      "refused": false
+    },
+    {
+      "question": "品牌使命是什么",
+      "doc": "公司介绍",
+      "rank": 1,
+      "top1_score": 0.4591,
+      "refused": false
+    },
+    {
+      "question": "这款牙刷卖多少钱",
+      "doc": "推销话术",
+      "rank": 2,
+      "top1_score": 0.7232,
+      "refused": false
+    },
+    {
+      "question": "直播间下单送什么",
+      "doc": "推销话术",
+      "rank": 1,
+      "top1_score": 0.564,
+      "refused": false
+    },
+    {
+      "question": "支持几天无理由退换",
+      "doc": "推销话术",
+      "rank": 1,
+      "top1_score": 0.575,
+      "refused": false
+    },
+    {
+      "question": "顾客嫌贵怎么回应",
+      "doc": "推销话术",
+      "rank": 2,
+      "top1_score": 0.4818,
+      "refused": false
+    },
+    {
+      "question": "顾客说普通牙刷够用怎么回应",
+      "doc": "推销话术",
+      "rank": 3,
+      "top1_score": 0.6187,
+      "refused": false
+    },
+    {
+      "question": "线下导购怎么开场",
+      "doc": "推销话术",
+      "rank": 1,
+      "top1_score": 0.4458,
+      "refused": false
+    },
+    {
+      "question": "能边洗澡边刷牙吗",
+      "doc": "推销话术",
+      "rank": 1,
+      "top1_score": 0.646,
+      "refused": false
+    }
+  ],
+  "negative_details": [
+    {
+      "question": "今天天气怎么样",
+      "top1_score": 0.391,
+      "top1_source": "常见问题.txt",
+      "top1_text": "天；用敏感呵护可延长至50天左右。低温（＜0℃）会缩短约10%，恢复室温后回升。",
+      "refused": true
+    },
+    {
+      "question": "帮我写一首关于春天的诗",
+      "top1_score": 0.3036,
+      "top1_source": "常见问题.txt",
+      "top1_text": "天；用敏感呵护可延长至50天左右。低温（＜0℃）会缩短约10%，恢复室温后回升。",
+      "refused": true
+    },
+    {
+      "question": "红烧肉怎么做",
+      "top1_score": 0.3783,
+      "top1_source": "产品手册.txt",
+      "top1_text": "第三章 使用操作指南（图文要点） 开机与模式切换  - 短按1次电源键 → 开机",
+      "refused": true
+    },
+    {
+      "question": "比特币现在什么价格",
+      "top1_score": 0.4224,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。",
+      "refused": false
+    },
+    {
+      "question": "智净X3的CEO叫什么名字",
+      "top1_score": 0.6467,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "- 2022年 扩建研发中心，启动X3项目，针对四大使用场景深度定制  - 20",
+      "refused": false
+    },
+    {
+      "question": "这款牙刷有几种颜色",
+      "top1_score": 0.606,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "你是不是一支刷头用了大半年，看着岔毛了还在硬撑？  如果你中了任何一条，今天这款",
+      "refused": false
+    },
+    {
+      "question": "电池用的是哪个品牌",
+      "top1_score": 0.5834,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "智能电池管理、精密防水结构设计等关键技术，并拥有多项实用新型专利及外观设计专利。",
+      "refused": false
+    },
+    {
+      "question": "能连接手机 App 吗",
+      "top1_score": 0.51,
+      "top1_source": "常见问题.txt",
+      "top1_text": "A18：扫描包装内二维码一键报修，顺丰上门取件，往返包邮，非常便捷。  Q19：",
+      "refused": false
+    },
+    {
+      "question": "双十一有什么优惠",
+      "top1_score": 0.5298,
+      "top1_source": "智净X3产品推销话术.txt",
+      "top1_text": "诉您‘主人，该换个新头了’。这不是催你花钱，是用科技提醒你‘该对自己好一点了’。",
+      "refused": false
+    },
+    {
+      "question": "公司股票代码是多少",
+      "top1_score": 0.4257,
+      "top1_source": "公司介绍.txt",
+      "top1_text": "厂前都经过严格的震动、防水、老化测试，确保到你手中的，不只是电器，更是一份安心。",
+      "refused": false
+    }
+  ]
+}

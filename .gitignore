@@ -15,6 +15,7 @@ venv/
 # ---- 向量库/本地数据 ----
 chroma_db*/
 *.sqlite3
+eval_results/*cache*.json
 
 # ---- 编辑器/系统 ----
 .vscode/
